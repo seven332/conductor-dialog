@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -63,6 +64,11 @@ class DialogContent extends FrameLayout {
 
     Drawable drawable = ResourcesUtils.getAttrDrawable(context, android.R.attr.windowBackground);
     ViewCompat.setBackground(this, drawable);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      float elevation = ResourcesUtils.getAttrDimension(context, android.R.attr.windowElevation);
+      ViewCompat.setElevation(this, elevation);
+    }
   }
 
   @Override

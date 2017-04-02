@@ -112,6 +112,32 @@ class ResourcesUtils {
   }
 
   /**
+   * Resolve a dimensional for a particular attribute ID. Unit
+   * conversions are based on the current {@link android.util.DisplayMetrics}
+   * associated with the content.
+   *
+   * @param context the context to resolve from
+   * @param id the desired attribute identifier
+   * @return resource dimension value multiplied by the appropriate
+   * @throws Resources.NotFoundException if the given ID does not exist
+   */
+  public static float getAttrDimension(@NonNull Context context, @AttrRes int id)
+      throws Resources.NotFoundException {
+    final TypedValue value = obtainTempTypedValue();
+    try {
+      resolveAttribute(context, id, value, true);
+      if (value.type == TypedValue.TYPE_DIMENSION) {
+        return TypedValue.complexToDimension(
+            value.data, context.getResources().getDisplayMetrics());
+      }
+      throw new Resources.NotFoundException("Resource ID #0x" + Integer.toHexString(id)
+          + " type #0x" + Integer.toHexString(value.type) + " is not valid");
+    } finally {
+      releaseTempTypedValue(value);
+    }
+  }
+
+  /**
    * Resolve a drawable object associated with a particular attribute ID.
    *
    * @param context the context to resolve from
