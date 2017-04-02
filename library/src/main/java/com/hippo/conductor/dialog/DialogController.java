@@ -49,7 +49,7 @@ public class DialogController extends Controller {
   private int themeId;
   private int actualThemeId;
   private boolean cancellable = true;
-  private boolean cancelledOnTouchOutside;
+  private boolean cancelledOnTouchOutside = true;
 
   private boolean cancelled;
   private boolean dismissed;
