@@ -123,7 +123,7 @@ public class DialogController extends Controller {
     inflater = resolveLayoutInflater(inflater);
     View view = inflater.inflate(R.layout.controller_dialog, container, false);
 
-    DialogRoot root = (DialogRoot) view.findViewById(R.id.dialog_root);
+    DialogRootView root = (DialogRootView) view.findViewById(R.id.dialog_root);
     root.setDialog(this);
     root.setCancelledOnTouchOutside(cancelledOnTouchOutside);
 
@@ -177,7 +177,7 @@ public class DialogController extends Controller {
       cancelledOnTouchOutside = cancel;
       View view = getView();
       if (view != null) {
-        DialogRoot root = (DialogRoot) view.findViewById(R.id.dialog_root);
+        DialogRootView root = (DialogRootView) view.findViewById(R.id.dialog_root);
         if (root != null) {
           root.setCancelledOnTouchOutside(cancel);
         }

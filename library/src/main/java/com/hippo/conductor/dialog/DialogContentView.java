@@ -35,23 +35,23 @@ import android.util.TypedValue;
 import android.widget.FrameLayout;
 
 // The actual content of dialog, direct child of DialogRoot.
-class DialogContent extends FrameLayout {
+class DialogContentView extends FrameLayout {
 
   private final TypedValue minWidthMajor = new TypedValue();
   private final TypedValue minWidthMinor = new TypedValue();
 
-  public DialogContent(@NonNull Context context) {
+  public DialogContentView(@NonNull Context context) {
     super(context);
     init(context);
   }
 
-  public DialogContent(@NonNull Context context,
+  public DialogContentView(@NonNull Context context,
       @Nullable AttributeSet attrs) {
     super(context, attrs);
     init(context);
   }
 
-  public DialogContent(@NonNull Context context,
+  public DialogContentView(@NonNull Context context,
       @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);

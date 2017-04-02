@@ -31,24 +31,24 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 // The root of dialog, shows dim effect, handles cancelled-on-touch-outside
-class DialogRoot extends FrameLayout {
+class DialogRootView extends FrameLayout {
 
   private DialogController dialog;
   private View content;
   private boolean cancelledOnTouchOutside;
 
-  public DialogRoot(@NonNull Context context) {
+  public DialogRootView(@NonNull Context context) {
     super(context);
     init(context);
   }
 
-  public DialogRoot(@NonNull Context context,
+  public DialogRootView(@NonNull Context context,
       @Nullable AttributeSet attrs) {
     super(context, attrs);
     init(context);
   }
 
-  public DialogRoot(@NonNull Context context,
+  public DialogRootView(@NonNull Context context,
       @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);
