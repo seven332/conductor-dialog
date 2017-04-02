@@ -78,7 +78,6 @@ public class DialogController extends Controller {
    * Do <b>NOT</b> call it.
    */
   @Keep
-  @Deprecated
   public DialogController(Bundle bundle) {
     super(bundle);
     themeId = bundle.getInt(KEY_THEME_ID);
