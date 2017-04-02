@@ -96,9 +96,13 @@ public class DialogController extends Controller {
    * It resolve the default theme.
    */
   public int getActualThemeId() {
-    final TypedValue outValue = new TypedValue();
-    getActivity().getTheme().resolveAttribute(android.R.attr.dialogTheme, outValue, true);
-    return outValue.resourceId;
+    if (themeId == 0) {
+      final TypedValue outValue = new TypedValue();
+      getActivity().getTheme().resolveAttribute(android.R.attr.dialogTheme, outValue, true);
+      return outValue.resourceId;
+    } else {
+      return themeId;
+    }
   }
 
   // Applies theme to LayoutInflater

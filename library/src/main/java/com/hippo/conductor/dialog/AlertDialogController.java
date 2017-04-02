@@ -29,8 +29,13 @@ public class AlertDialogController extends DialogController {
 
   @Override
   public int getActualThemeId() {
-    final TypedValue outValue = new TypedValue();
-    getActivity().getTheme().resolveAttribute(android.R.attr.alertDialogTheme, outValue, true);
-    return outValue.resourceId;
+    final int themeId = getThemeId();
+    if (themeId == 0) {
+      final TypedValue outValue = new TypedValue();
+      getActivity().getTheme().resolveAttribute(android.R.attr.alertDialogTheme, outValue, true);
+      return outValue.resourceId;
+    } else {
+      return themeId;
+    }
   }
 }
