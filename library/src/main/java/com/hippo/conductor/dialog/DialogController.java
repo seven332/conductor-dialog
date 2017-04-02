@@ -20,8 +20,10 @@ package com.hippo.conductor.dialog;
  * Created by Hippo on 4/2/2017.
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.util.TypedValue;
@@ -30,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.Router;
 
 /**
  * {@code DialogController} shows a view in dialog style.
@@ -38,14 +41,17 @@ public class DialogController extends Controller {
 
   private static final String KEY_THEME_ID = "DialogController:theme_id";
 
-  private static Bundle buildArgs(int themeId) {
-    Bundle bundle = new Bundle();
-    bundle.putInt(KEY_THEME_ID, themeId);
-    return bundle;
-  }
+  private static final String KEY_CANCELLABLE = "DialogController:cancellable";
+  private static final String KEY_CANCELLED_ON_TOUCH_OUTSIDE =
+      "DialogController:cancelled_on_touch_outside";
 
   private int themeId;
   private int actualThemeId;
+  private boolean cancellable = true;
+  private boolean cancelledOnTouchOutside;
+
+  private boolean cancelled;
+  private boolean dismissed;
 
   /**
    * Creates a dialog controller that uses the default dialog theme.
@@ -58,9 +64,20 @@ public class DialogController extends Controller {
    * Creates a dialog controller that uses a custom dialog style.
    */
   public DialogController(@StyleRes int themeId) {
-    this(buildArgs(themeId));
+    super();
+
+    // Put args
+    Bundle args = getArgs();
+    args.putInt(KEY_THEME_ID, themeId);
+
+    this.themeId = themeId;
   }
 
+  /**
+   * Do <b>NOT</b> call it.
+   */
+  @Keep
+  @Deprecated
   public DialogController(Bundle bundle) {
     super(bundle);
     themeId = bundle.getInt(KEY_THEME_ID);
@@ -102,6 +119,10 @@ public class DialogController extends Controller {
     inflater = resolveLayoutInflater(inflater);
     View view = inflater.inflate(R.layout.controller_dialog, container, false);
 
+    DialogRoot root = (DialogRoot) view.findViewById(R.id.dialog_root);
+    root.setDialog(this);
+    root.setCancelledOnTouchOutside(cancelledOnTouchOutside);
+
     ViewGroup content = (ViewGroup) view.findViewById(R.id.dialog_content);
     onSetContentView(inflater, content);
 
@@ -115,4 +136,102 @@ public class DialogController extends Controller {
    * @param parent The parent view to add content view
    */
   protected void onSetContentView(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {}
+
+  /**
+   * Sets whether this dialog is cancellable with the
+   * {@link android.view.KeyEvent#KEYCODE_BACK BACK} key.
+   */
+  public void setCancellable(boolean flag) {
+    cancellable = flag;
+  }
+
+  /**
+   * Sets whether this dialog is cancelled when touched outside the window's
+   * bounds. If setting to true, the dialog is set to be cancellable if not
+   * already set.
+   *
+   * @param cancel Whether the dialog should be cancelled when touched outside
+   *               the window.
+   */
+  public void setCancelledOnTouchOutside(boolean cancel) {
+    if (cancel && !cancellable) {
+      cancellable = true;
+    }
+
+    if (cancelledOnTouchOutside != cancel) {
+      cancelledOnTouchOutside = cancel;
+      View view = getView();
+      if (view != null) {
+        DialogRoot root = (DialogRoot) view.findViewById(R.id.dialog_root);
+        if (root != null) {
+          root.setCancelledOnTouchOutside(cancel);
+        }
+      }
+    }
+  }
+
+  /**
+   * Cancel the dialog. This is essentially the same as calling {@link #dismiss()}, but it will
+   * also call {@link #onCancel()}.
+   */
+  public void cancel() {
+    if (!cancelled && !dismissed) {
+      cancelled = true;
+      onCancel();
+      dismiss();
+    }
+  }
+
+  /**
+   * Dismiss this dialog, removing it from the screen. it will
+   * also call {@link #onDismiss()}.
+   */
+  public void dismiss() {
+    if (!dismissed) {
+      dismissed = true;
+      onDismiss();
+      Router router = getRouter();
+      if (router != null) {
+        router.popController(this);
+        // Handle activity finishing
+        if (router.getCurrentController() == null) {
+          Activity activity = getActivity();
+          if (activity != null) {
+            activity.finish();
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * This method will be invoked when the dialog is cancelled.
+   */
+  public void onCancel() {}
+
+  /**
+   * This method will be invoked when the dialog is dismissed.
+   */
+  public void onDismiss() {}
+
+  @Override
+  public boolean handleBack() {
+    boolean result = super.handleBack();
+    return !cancellable || result;
+  }
+
+  @Override
+  protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+    super.onRestoreInstanceState(savedInstanceState);
+    setCancellable(savedInstanceState.getBoolean(KEY_CANCELLABLE, cancellable));
+    setCancelledOnTouchOutside(savedInstanceState.getBoolean(
+        KEY_CANCELLED_ON_TOUCH_OUTSIDE, cancelledOnTouchOutside));
+  }
+
+  @Override
+  protected void onSaveInstanceState(@NonNull Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putBoolean(KEY_CANCELLABLE, cancellable);
+    outState.putBoolean(KEY_CANCELLED_ON_TOUCH_OUTSIDE, cancelledOnTouchOutside);
+  }
 }

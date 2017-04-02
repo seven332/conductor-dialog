@@ -26,10 +26,16 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 
-// The root of dialog, shows dim effect.
+// The root of dialog, shows dim effect, handles cancelled-on-touch-outside
 class DialogRoot extends FrameLayout {
+
+  private DialogController dialog;
+  private View content;
+  private boolean cancelledOnTouchOutside;
 
   public DialogRoot(@NonNull Context context) {
     super(context);
@@ -53,5 +59,47 @@ class DialogRoot extends FrameLayout {
         ResourcesUtils.getAttrFloat(context, android.R.attr.backgroundDimAmount);
     final int alpha = (int) (255 * dimAmount);
     setBackgroundColor(Color.argb(alpha, 0, 0, 0));
+  }
+
+  void setDialog(DialogController dialog) {
+    this.dialog = dialog;
+  }
+
+  public void setCancelledOnTouchOutside(boolean cancel) {
+    cancelledOnTouchOutside = cancel;
+  }
+
+  private void ensureContent() {
+    if (content == null) {
+      if (getChildCount() == 0) {
+        throw new IllegalStateException("DialogRoot should contain a DialogContent");
+      }
+      content = getChildAt(0);
+    }
+  }
+
+  private boolean isUnderView(View view, MotionEvent event) {
+    float x = event.getX();
+    float y = event.getY();
+    return x >= view.getLeft() && x < view.getRight()
+        && y >= view.getTop() && y < view.getBottom();
+  }
+
+  private void cancel() {
+    if (dialog != null) {
+      dialog.cancel();
+    }
+  }
+
+  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+    if (cancelledOnTouchOutside) {
+      ensureContent();
+      if (!isUnderView(content, event)) {
+        cancel();
+      }
+    }
+    // Always return true to avoid touch through
+    return true;
   }
 }
