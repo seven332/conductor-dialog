@@ -20,18 +20,11 @@ package com.hippo.conductor.dialog.demo;
  * Created by Hippo on 4/2/2017.
  */
 
-import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import com.hippo.conductor.dialog.AlertDialogController;
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 
-public class CustomDialogController extends AlertDialogController {
+public class DialogChangeHandler extends SimpleSwapChangeHandler {
 
-  @Override
-  protected void onSetContentView(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
-    TextView text = new TextView(inflater.getContext());
-    text.setText("I'm a DialogController");
-    parent.addView(text);
+  public DialogChangeHandler() {
+    super(false);
   }
 }

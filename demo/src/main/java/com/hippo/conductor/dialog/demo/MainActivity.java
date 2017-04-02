@@ -25,17 +25,25 @@ import com.bluelinelabs.conductor.RouterTransaction;
 
 public class MainActivity extends AppCompatActivity {
 
+  private Router router;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
     ViewGroup container = (ViewGroup) findViewById(R.id.controller_container);
-    Router router = Conductor.attachRouter(this, container, savedInstanceState);
+    router = Conductor.attachRouter(this, container, savedInstanceState);
     if (!router.hasRootController()) {
-      // It's root controller, doesn't need ChangeHandler
-      RouterTransaction transaction = RouterTransaction.with(new CustomDialogController());
+      RouterTransaction transaction = RouterTransaction.with(new HomeController());
       router.setRoot(transaction);
+    }
+  }
+
+  @Override
+  public void onBackPressed() {
+    if (router == null || !router.handleBack()) {
+      super.onBackPressed();
     }
   }
 }
