@@ -25,6 +25,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
@@ -128,18 +129,29 @@ public class DialogController extends Controller {
     root.setCancelledOnTouchOutside(cancelledOnTouchOutside);
 
     ViewGroup content = (ViewGroup) view.findViewById(R.id.dialog_content);
-    onSetContentView(inflater, content);
+    View dialogContent = onCreateContentView(inflater, content);
+    if (dialogContent != null) {
+      content.addView(dialogContent);
+    }
 
     return view;
   }
 
   /**
-   * Creates dialog content view and adds it to {@code parent}.
+   * Called when the dialog is ready to display its view. {@code null} could be returned.
+   * The standard body for this method will be
+   * {@code return inflater.inflate(R.layout.my_layout, container, false);}, plus any binding code.
    *
    * @param inflater The LayoutInflater that should be used to inflate views
-   * @param parent The parent view to add content view
+   * @param container The parent view that this dialog's view will eventually be attached to.
+   *                  This dialog's view should NOT be added in this method. It is simply passed in
+   *                  so that valid LayoutParams can be used during inflation.
    */
-  protected void onSetContentView(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {}
+  @Nullable
+  protected View onCreateContentView(
+      @NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    return null;
+  }
 
   /**
    * Sets whether this dialog is cancellable with the
