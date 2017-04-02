@@ -93,7 +93,7 @@ class DialogRoot extends FrameLayout {
 
   @Override
   public boolean onTouchEvent(MotionEvent event) {
-    if (cancelledOnTouchOutside) {
+    if (cancelledOnTouchOutside && event.getActionMasked() == MotionEvent.ACTION_DOWN) {
       ensureContent();
       if (!isUnderView(content, event)) {
         cancel();
