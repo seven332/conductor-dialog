@@ -152,6 +152,16 @@ public class DialogController extends Controller {
     return null;
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    // Avoid missing onDismiss()
+    if (!dismissed) {
+      dismissed = true;
+      onDismiss();
+    }
+  }
+
   /**
    * Sets whether this dialog is cancellable with the
    * {@link android.view.KeyEvent#KEYCODE_BACK BACK} key.
@@ -231,7 +241,15 @@ public class DialogController extends Controller {
   @Override
   public boolean handleBack() {
     boolean result = super.handleBack();
-    return !cancellable || result;
+    result = !cancellable || result;
+    if (!result) {
+      // This dialog will be cancelled
+      if (!cancelled && !dismissed) {
+        cancelled = true;
+        onCancel();
+      }
+    }
+    return result;
   }
 
   @Override
