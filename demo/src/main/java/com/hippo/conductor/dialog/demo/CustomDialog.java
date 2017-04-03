@@ -24,13 +24,15 @@ import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import com.bluelinelabs.conductor.Router;
 
 public class CustomDialog extends AlertDialogController {
+
+  private static final String LOG_TAG = CustomDialog.class.getSimpleName();
 
   public CustomDialog() {
     super();
@@ -53,12 +55,19 @@ public class CustomDialog extends AlertDialogController {
     button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Router router = getRouter();
-        if (router != null) {
-          router.popController(CustomDialog.this);
-        }
+        dismiss();
       }
     });
     return view;
+  }
+
+  @Override
+  public void onCancel() {
+    Log.d(LOG_TAG, this + " onCancel");
+  }
+
+  @Override
+  public void onDismiss() {
+    Log.d(LOG_TAG, this + " onDismiss");
   }
 }
