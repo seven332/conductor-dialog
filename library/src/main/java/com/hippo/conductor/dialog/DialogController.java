@@ -207,9 +207,8 @@ public class DialogController extends Controller {
       onDismiss();
       Router router = getRouter();
       if (router != null) {
-        router.popController(this);
-        // Handle activity finishing
-        if (router.getCurrentController() == null) {
+        if (!router.popController(this)) {
+          // Handle activity finishing
           Activity activity = getActivity();
           if (activity != null) {
             activity.finish();
