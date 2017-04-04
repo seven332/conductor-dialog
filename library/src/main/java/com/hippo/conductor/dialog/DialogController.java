@@ -22,6 +22,7 @@ package com.hippo.conductor.dialog;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
@@ -38,7 +39,7 @@ import com.bluelinelabs.conductor.Router;
 /**
  * {@code DialogController} shows a view in dialog style.
  */
-public class DialogController extends Controller {
+public class DialogController extends Controller implements DialogInterface {
 
   private static final String KEY_THEME_ID = "DialogController:theme_id";
 
@@ -199,6 +200,7 @@ public class DialogController extends Controller {
    * Cancel the dialog. This is essentially the same as calling {@link #dismiss()}, but it will
    * also call {@link #onCancel()}.
    */
+  @Override
   public void cancel() {
     if (!cancelled && !dismissed) {
       cancelled = true;
@@ -211,6 +213,7 @@ public class DialogController extends Controller {
    * Dismiss this dialog, removing it from the screen. it will
    * also call {@link #onDismiss()}.
    */
+  @Override
   public void dismiss() {
     if (!dismissed) {
       dismissed = true;
