@@ -26,7 +26,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.TypedValue;
 
 class ResourcesUtils {
@@ -154,7 +154,7 @@ class ResourcesUtils {
           && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
         return new ColorDrawable(value.data);
       } else if (value.type == TypedValue.TYPE_REFERENCE) {
-        return ContextCompat.getDrawable(context, value.data);
+        return AppCompatResources.getDrawable(context, value.data);
       }
       throw new Resources.NotFoundException("Resource ID #0x" + Integer.toHexString(id)
           + " type #0x" + Integer.toHexString(value.type) + " is not valid");
