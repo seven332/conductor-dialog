@@ -122,13 +122,13 @@ public class DialogController extends Controller implements DialogInterface {
   @Override
   protected final View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
     inflater = resolveLayoutInflater(inflater);
-    View view = inflater.inflate(R.layout.controller_dialog, container, false);
+    View view = inflater.inflate(R.layout.cd_controller_dialog, container, false);
 
-    DialogRootView root = (DialogRootView) view.findViewById(R.id.dialog_root);
+    DialogRootView root = (DialogRootView) view.findViewById(R.id.cd_dialog_root);
     root.setDialog(this);
     root.setCancelledOnTouchOutside(cancelledOnTouchOutside);
 
-    ViewGroup content = (ViewGroup) view.findViewById(R.id.dialog_content);
+    ViewGroup content = (ViewGroup) view.findViewById(R.id.cd_dialog_content);
     View dialogContent = onCreateContentView(inflater, content);
     if (dialogContent != null) {
       content.addView(dialogContent);
@@ -188,7 +188,7 @@ public class DialogController extends Controller implements DialogInterface {
       cancelledOnTouchOutside = cancel;
       View view = getView();
       if (view != null) {
-        DialogRootView root = (DialogRootView) view.findViewById(R.id.dialog_root);
+        DialogRootView root = (DialogRootView) view.findViewById(R.id.cd_dialog_root);
         if (root != null) {
           root.setCancelledOnTouchOutside(cancel);
         }
