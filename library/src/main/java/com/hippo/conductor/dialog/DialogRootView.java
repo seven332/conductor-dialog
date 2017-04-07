@@ -28,14 +28,16 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 
-// The root of dialog, shows dim effect, handles cancelled-on-touch-outside
-class DialogRootView extends FrameLayout implements DialogRoot {
+// The root of dialog, shows dim effect, handles cancelled-on-touch-outside,
+// resize dialog width.
+class DialogRootView extends ViewGroup implements DialogRoot {
 
   private DialogController dialog;
   private View content;
   private boolean cancelledOnTouchOutside;
+  private int dialogWidth;
 
   public DialogRootView(@NonNull Context context) {
     super(context);
@@ -55,6 +57,7 @@ class DialogRootView extends FrameLayout implements DialogRoot {
   }
 
   private void init(Context context) {
+    dialogWidth = context.getResources().getDimensionPixelSize(R.dimen.cd_dialog_width);
     final float dimAmount =
         ResourcesUtils.getAttrFloat(context, android.R.attr.backgroundDimAmount);
     final int alpha = (int) (255 * dimAmount);
@@ -101,6 +104,70 @@ class DialogRootView extends FrameLayout implements DialogRoot {
     }
     // Always return true to avoid touch through
     return true;
+  }
+
+  private static int getMeasuredDimension(int spec, int childDimension) {
+    int size = MeasureSpec.getSize(spec);
+    int mode = MeasureSpec.getMode(spec);
+    if (mode == MeasureSpec.EXACTLY || mode == MeasureSpec.AT_MOST) {
+      return size;
+    } else {
+      return childDimension;
+    }
+  }
+
+  // android.view.ViewRootImpl
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    ensureContent();
+    View content = this.content;
+    int baseWidth = dialogWidth;
+    int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+    int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+    ViewGroup.LayoutParams lp = content.getLayoutParams();
+
+    boolean resizeWidth;
+    int childWidthMeasureSpec;
+    if (lp.width == LayoutParams.WRAP_CONTENT &&
+        (widthMode == MeasureSpec.AT_MOST || widthMode == MeasureSpec.EXACTLY) &&
+        widthSize > baseWidth) {
+      resizeWidth = true;
+      childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(baseWidth, MeasureSpec.AT_MOST);
+    } else {
+      resizeWidth = false;
+      childWidthMeasureSpec = ViewGroup.getChildMeasureSpec(widthMeasureSpec, 0, lp.width);
+    }
+    int childHeightMeasureSpec = ViewGroup.getChildMeasureSpec(heightMeasureSpec, 0, lp.height);
+
+    content.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+
+    if (resizeWidth && (content.getMeasuredWidthAndState() & View.MEASURED_STATE_TOO_SMALL) != 0) {
+      // Didn't fit in that width... try expanding a bit.
+      baseWidth = (baseWidth + widthSize) / 2;
+      childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(baseWidth, MeasureSpec.AT_MOST);
+      content.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+    }
+
+    if (resizeWidth && (content.getMeasuredWidthAndState() & View.MEASURED_STATE_TOO_SMALL) != 0) {
+      // Still didn't fit in that width... restore.
+      childWidthMeasureSpec = ViewGroup.getChildMeasureSpec(widthMeasureSpec, 0, lp.width);
+      content.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+    }
+
+    int width = getMeasuredDimension(widthMeasureSpec, content.getMeasuredWidth());
+    int height = getMeasuredDimension(heightMeasureSpec, content.getMeasuredHeight());
+    setMeasuredDimension(width, height);
+  }
+
+  @Override
+  protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    ensureContent();
+    View content = this.content;
+    int contentWidth = content.getMeasuredWidth();
+    int contentHeight = content.getMeasuredHeight();
+    int left = (getWidth() - contentWidth) / 2;
+    int top = (getHeight() - contentHeight) / 2;
+    content.layout(left, top, left + contentWidth, top + contentHeight);
   }
 
   @NonNull
