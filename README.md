@@ -6,6 +6,14 @@ Conductor-Dialog provides a dialog-like Controller.
 
 ## Usage
 
+```
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+compile 'com.github.seven332:conductor-dialog:{version}'
+```
+
 ### Implementation
 
 ```java
