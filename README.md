@@ -28,6 +28,10 @@ DialogController uses these attributes:
 
 DialogController uses the theme `android.R.attr.dialogTheme` in default. It also supports custom theme.
 
+## Note
+
+`v7 appcompat library` is used to be compatible with `Theme.AppCompat.XXX`.
+
 ## License
 
 ```
