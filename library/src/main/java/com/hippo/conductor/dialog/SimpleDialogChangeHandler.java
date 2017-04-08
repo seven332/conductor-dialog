@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.hippo.conductor.dialog.demo;
+package com.hippo.conductor.dialog;
 
 /*
- * Created by Hippo on 4/2/2017.
+ * Created by Hippo on 4/8/2017.
  */
 
 import android.animation.Animator;
@@ -29,16 +29,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.bluelinelabs.conductor.ControllerChangeHandler;
 import com.bluelinelabs.conductor.changehandler.AnimatorChangeHandler;
-import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 
-public class DialogChangeHandler extends AnimatorChangeHandler {
+/**
+ * A very simple {@link ControllerChangeHandler} for {@link DialogController}.
+ * Only fading.
+ */
+public class SimpleDialogChangeHandler extends AnimatorChangeHandler {
 
-  public DialogChangeHandler() {
-    super(300L, false);
+  public SimpleDialogChangeHandler() {
+    super(150L, false);
   }
 
-  @Override @NonNull
-  protected Animator getAnimator(@NonNull ViewGroup container, @Nullable View from, @Nullable View to, boolean isPush, boolean toAddedToContainer) {
+  @NonNull
+  @Override
+  protected Animator getAnimator(
+      @NonNull ViewGroup container, @Nullable View from, @Nullable View to,
+      boolean isPush, boolean toAddedToContainer) {
     AnimatorSet animator = new AnimatorSet();
     if (to != null) {
       float start = toAddedToContainer ? 0 : to.getAlpha();
@@ -57,8 +63,9 @@ public class DialogChangeHandler extends AnimatorChangeHandler {
     from.setAlpha(1);
   }
 
-  @Override @NonNull
+  @NonNull
+  @Override
   public ControllerChangeHandler copy() {
-    return new FadeChangeHandler(getAnimationDuration(), removesFromViewOnPush());
+    return new SimpleDialogChangeHandler();
   }
 }

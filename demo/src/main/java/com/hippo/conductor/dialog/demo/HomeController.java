@@ -31,6 +31,7 @@ import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.hippo.conductor.dialog.DialogController;
+import com.hippo.conductor.dialog.SimpleDialogChangeHandler;
 
 public class HomeController extends Controller {
 
@@ -77,8 +78,8 @@ public class HomeController extends Controller {
         }
         router.pushController(
             RouterTransaction.with(dialog)
-                .pushChangeHandler(new DialogChangeHandler())
-                .popChangeHandler(new DialogChangeHandler())
+                .pushChangeHandler(new SimpleDialogChangeHandler())
+                .popChangeHandler(new SimpleDialogChangeHandler())
         );
       }
     });
