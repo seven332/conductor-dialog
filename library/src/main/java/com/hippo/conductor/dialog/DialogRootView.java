@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 // resize dialog width.
 class DialogRootView extends ViewGroup implements DialogRoot {
 
+  private float backgroundDimAmount;
   private DialogController dialog;
   private View content;
   private boolean cancelledOnTouchOutside;
@@ -58,10 +59,23 @@ class DialogRootView extends ViewGroup implements DialogRoot {
 
   private void init(Context context) {
     dialogWidth = context.getResources().getDimensionPixelSize(R.dimen.cd_dialog_width);
-    final float dimAmount =
+    backgroundDimAmount =
         ResourcesUtils.getAttrFloat(context, android.R.attr.backgroundDimAmount);
-    final int alpha = (int) (255 * dimAmount);
+    // Ensure backgroundDimAmount is in range
+    backgroundDimAmount = clamp(backgroundDimAmount, 0.0f, 1.0f);
+    final int alpha = (int) (255 * backgroundDimAmount);
     setBackgroundColor(Color.argb(alpha, 0, 0, 0));
+  }
+
+  public static float clamp(float x, float bound1, float bound2) {
+    if (bound2 >= bound1) {
+      if (x > bound2) return bound2;
+      if (x < bound1) return bound1;
+    } else {
+      if (x > bound1) return bound1;
+      if (x < bound2) return bound2;
+    }
+    return x;
   }
 
   void setDialog(DialogController dialog) {
@@ -175,5 +189,10 @@ class DialogRootView extends ViewGroup implements DialogRoot {
   public View getDialogContent() {
     ensureContent();
     return content;
+  }
+
+  @Override
+  public float getBackgroundDimAmount() {
+    return backgroundDimAmount;
   }
 }

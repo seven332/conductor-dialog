@@ -36,4 +36,10 @@ public interface DialogRoot {
    */
   @NonNull
   View getDialogContent();
+
+  /**
+   * Returns the background dim amount which is in a range from 0.0 to 1.0.
+   * It's described as {@link android.R.attr#backgroundDimAmount}.
+   */
+  float getBackgroundDimAmount();
 }
