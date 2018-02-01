@@ -1,16 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion "$target_sdk_version".toInteger()
 
     defaultConfig {
         applicationId "com.hippo.conductor.dialog.demo"
-        minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion "$mini_sdk_version"
+        targetSdkVersion "$target_sdk_version"
+        versionCode "$project_version_code".toInteger()
+        versionName "$project_version_name"
     }
 
     buildTypes {
@@ -22,10 +20,7 @@ android {
 }
 
 dependencies {
-    compile project(':library')
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile 'junit:junit:4.12'
+    implementation project(':library')
+    implementation "com.android.support:appcompat-v7:$support_library_version"
+    testImplementation 'junit:junit:4.12'
 }
