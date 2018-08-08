@@ -38,7 +38,7 @@ DialogController uses the theme `android.R.attr.dialogTheme` in default. It also
 
 ## Note
 
-`v7 appcompat library` is used to be compatible with `Theme.AppCompat.XXX`.
+`v7 appcompat library` is used to make this library compatible with `Theme.AppCompat.XXX`.
 
 Please check [android-dialog](https://github.com/seven332/android-dialog) if you need something like `AlertDialog`.
 
